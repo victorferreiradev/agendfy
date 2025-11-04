@@ -3,6 +3,8 @@ import { StatsCard } from "@/components/dashboard/StatsCard";
 import { Calendar, Users, TrendingUp, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const stats = [
   {
@@ -67,14 +69,27 @@ const recentAppointments = [
 ];
 
 export default function Dashboard() {
+  const { token, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-8 animate-fade-in">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground mt-2">
-            Visão geral dos seus agendamentos e métricas
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+            <p className="text-muted-foreground mt-2">
+              Visão geral dos seus agendamentos e métricas
+            </p>
+          </div>
+          <Button variant="outline" onClick={handleLogout}>
+            Sair
+          </Button>
         </div>
 
         {/* Stats Grid */}
@@ -145,15 +160,26 @@ export default function Dashboard() {
               Ações Rápidas
             </h2>
             <div className="space-y-3">
-              <Button className="w-full justify-start gradient-primary">
+              <Button 
+                className="w-full justify-start gradient-primary"
+                onClick={() => navigate("/appointments")}
+              >
                 <Calendar className="w-4 h-4 mr-2" />
                 Novo Agendamento
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => navigate("/clients")}
+              >
                 <Users className="w-4 h-4 mr-2" />
                 Adicionar Cliente
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => navigate("/reports")}
+              >
                 <TrendingUp className="w-4 h-4 mr-2" />
                 Ver Relatórios
               </Button>
@@ -161,15 +187,15 @@ export default function Dashboard() {
 
             <div className="mt-8 p-4 bg-muted/30 rounded-lg">
               <h3 className="font-semibold text-foreground mb-2">
-                Integração WhatsApp
+                Status do Sistema
               </h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Envie lembretes automáticos para seus clientes
+                Token: {token ? "✅ Logado" : "❌ Deslogado"}
               </p>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
                 <span className="text-sm text-accent font-medium">
-                  Conectado
+                  Sistema Online
                 </span>
               </div>
             </div>
